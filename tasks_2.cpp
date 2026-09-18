@@ -31,14 +31,204 @@ class DynoArray{
         }
 };
 
-void destroyTest(){
+void destroyTest(){ // this is the destroyFun task.6
     DynoArray dynamicArray[5];
     
     delete[] dynamicArray;
     cout << "Destroyed dynamicArray" << endl;
 }
 
+struct Book{
+    public:
+        string title;
+        string author;
+        int year;
+};
+
+void printBook(Book b){
+    cout << "Title: " << b.title << endl;
+    cout << "Author: " << b.author << endl;
+    cout << "Year: " << b.year << endl;
+}
+
+void addBook(Book *shelfy, Book b, int &storedCount){
+    if (storedCount < 2){
+        shelfy[storedCount] = b;
+        storedCount++;
+    } else {
+        cout << "Shelf is full!" << endl;
+        int newsize = storedCount * 2;
+        Book *new_shelf = new Book[newsize];
+        for (int i = 0; i < storedCount; i++){
+            new_shelf[i] = shelfy[i];
+        }
+        new_shelf[storedCount] = b;
+        delete[] shelfy;
+        shelfy = new_shelf;
+        storedCount++;
+        cout << "Shelf size increased to " << newsize << endl;
+    }
+}
+
+struct Book_Task9{
+    private:
+        string name_book;
+        string name_author;
+        string name_publisher;
+        int assignedID;
+        int ISSN, Edition;
+        bool isAvailable;
+    public:
+        Book_Task9(string name_book, string name_author, string name_publisher, int assignedID, int ISSN, int Edition, bool isAvailable){
+            this->name_book = name_book;
+            this->name_author = name_author;
+            this->name_publisher = name_publisher;
+            this->assignedID = assignedID;
+            this->ISSN = ISSN;
+            this->Edition = Edition;
+            this->isAvailable = isAvailable;
+        }
+
+        void inputDetails(string name_book, string name_author, string name_publisher, int assignedID, int ISSN, int Edition, bool isAvailable){
+            this->name_book = name_book;
+            this->name_author = name_author;
+            this->name_publisher = name_publisher;
+            this->assignedID = assignedID;
+            this->ISSN = ISSN;
+            this->Edition = Edition;
+            this->isAvailable = isAvailable;
+        }
+
+        void displayDetails(string name_bookFun){
+            if (name_bookFun != name_book){
+                cout << "Book not found!" << endl;
+                return;
+            }
+            cout << "Book Name: " << name_book << endl;
+            cout << "Author: " << name_author << endl;
+            cout << "Publisher: " << name_publisher << endl;
+            cout << "Assigned ID: " << assignedID << endl;
+            cout << "ISSN: " << ISSN << endl;
+            cout << "Edition: " << Edition << endl;
+            cout << "Availability: " << (isAvailable ? "Available" : "Not Available") << endl;
+        }
+
+        void displayDetails(){
+            cout << "Book Name: " << name_book << endl;
+            cout << "Author: " << name_author << endl;
+            cout << "Publisher: " << name_publisher << endl;
+            cout << "Assigned ID: " << assignedID << endl;
+            cout << "ISSN: " << ISSN << endl;
+            cout << "Edition: " << Edition << endl;
+            cout << "Availability: " << (isAvailable ? "Available" : "Not Available") << endl;
+        }
+
+        void displayDetails(int ISSNFun){
+            if (ISSNFun != ISSN){
+                cout << "Book not found!" << endl;
+                return;
+            }
+            cout << "Book Name: " << name_book << endl;
+            cout << "Author: " << name_author << endl;
+            cout << "Publisher: " << name_publisher << endl;
+            cout << "Assigned ID: " << assignedID << endl;
+            cout << "ISSN: " << ISSN << endl;
+            cout << "Edition: " << Edition << endl;
+            cout << "Availability: " << (isAvailable ? "Available" : "Not Available") << endl;
+        }
+
+        bool availabilityStatus(){
+            return isAvailable;
+        }
+
+        void issueBook(){
+            if (isAvailable){
+                isAvailable = false;
+                cout << "Book issued successfully!" << endl;
+            } else {
+                cout << "Book is not available for issue!" << endl;
+            }
+        }
+};
+
+class Library{
+    private:
+        string librarian;
+        int maxBookNums, currentBookNums;
+        Book_Task9 *books;
+    public:
+        Library(string librarian){
+            this->librarian = librarian;
+            maxBookNums = 100;
+            currentBookNums = 0;
+        }
+        Library(string librarian, int maxBookNums){
+            this->librarian = librarian;
+            this->maxBookNums = maxBookNums;
+            currentBookNums = 0;
+        }
+        void DispBookDetails(){
+            for (int i = 0; i < currentBookNums; i++){
+                books[i].displayDetails();
+            }
+        }
+        void addBook(Book_Task9 book){
+            if (currentBookNums < maxBookNums){
+                books[currentBookNums] = book;
+                currentBookNums++;
+            } else {
+                cout << "Library is full!" << endl;
+            }
+        }
+        void searchBook(string name_book){
+            for (int i = 0; i < currentBookNums; i++){
+                cout << "Book " << i+1 << " is " << (books[i].isAvailable ? "Available" : "Not Available") << endl;
+            }
+        }
+        void assignBook(string name_book){
+            for (int i = 0; i < currentBookNums; i++){
+                if (books[i].availabilityStatus() && books[i].name_book == name_book){
+                    books[i].issueBook();
+                    return;
+                }
+            }
+            cout << "Book not found or not available!" << endl;
+        }
+        ~Library(){
+            delete[] books;
+        }
+};
+
+
 int main(){
+    Book b1,b2,b3;
+    b1.title = "b1";
+    b1.author = "agartha";
+    b1.year = 1999;
+
+    b2.title = "b2";
+    b2.author = "agartha";
+    b2.year = 1999;
+
+    b3.title = "b3";
+    b3.author = "agartha";
+    b3.year = 1999;
+
+    printBook(b1);
+    printBook(b2);
+    printBook(b3);
+
+    int storedCount = 0;
+    Book *shelfy = new Book[2];
+    addBook(shelfy, b1, storedCount);
+    addBook(shelfy, b2, storedCount);
+    addBook(shelfy, b3, storedCount);
+    Book b4 = {"b4", "agartha", 1999};
+    addBook(shelfy, b4, storedCount);
+
+    cout << "Total number of book copies: " << storedCount << endl;
+    
+
     Student *pointy_student = new Student("John");
     delete pointy_student;
 
