@@ -8,6 +8,7 @@ class Student{
 
         Student(string n){
             name = n;
+            roll_num = 0;
             cout << "Constructor called for " << name << endl;
         }
         ~Student(){
@@ -32,9 +33,9 @@ class DynoArray{
 };
 
 void destroyTest(){ // this is the destroyFun task.6
-    DynoArray dynamicArray[5];
-    
+    DynoArray *dynamicArray = new DynoArray[5];
     delete[] dynamicArray;
+
     cout << "Destroyed dynamicArray" << endl;
 }
 
@@ -51,24 +52,32 @@ void printBook(Book b){
     cout << "Year: " << b.year << endl;
 }
 
-void addBook(Book *shelfy, Book b, int &storedCount){
+void addBook(Book *&shelfy, Book b, int &storedCount){
     if (storedCount < 2){
         shelfy[storedCount] = b;
         storedCount++;
-    } else {
+    } 
+    else {
         cout << "Shelf is full!" << endl;
+
         int newsize = storedCount * 2;
         Book *new_shelf = new Book[newsize];
+
         for (int i = 0; i < storedCount; i++){
             new_shelf[i] = shelfy[i];
         }
+
         new_shelf[storedCount] = b;
+
         delete[] shelfy;
         shelfy = new_shelf;
+
         storedCount++;
+
         cout << "Shelf size increased to " << newsize << endl;
     }
 }
+
 
 struct Book_Task9{
     private:
@@ -79,6 +88,8 @@ struct Book_Task9{
         int ISSN, Edition;
         bool isAvailable;
     public:
+        Book_Task9(): name_book(""),name_author(""),name_publisher(""),assignedID(0),ISSN(0),Edition(0),isAvailable(false){}
+
         Book_Task9(string name_book, string name_author, string name_publisher, int assignedID, int ISSN, int Edition, bool isAvailable){
             this->name_book = name_book;
             this->name_author = name_author;
@@ -141,6 +152,11 @@ struct Book_Task9{
             return isAvailable;
         }
 
+        string getBookName(){
+            return name_book;
+        }
+
+
         void issueBook(){
             if (isAvailable){
                 isAvailable = false;
@@ -161,11 +177,13 @@ class Library{
             this->librarian = librarian;
             maxBookNums = 100;
             currentBookNums = 0;
+            books = new Book_Task9[maxBookNums];
         }
         Library(string librarian, int maxBookNums){
             this->librarian = librarian;
             this->maxBookNums = maxBookNums;
             currentBookNums = 0;
+            books = new Book_Task9[maxBookNums];
         }
         void DispBookDetails(){
             for (int i = 0; i < currentBookNums; i++){
@@ -182,12 +200,16 @@ class Library{
         }
         void searchBook(string name_book){
             for (int i = 0; i < currentBookNums; i++){
-                cout << "Book " << i+1 << " is " << (books[i].isAvailable ? "Available" : "Not Available") << endl;
+                if (books[i].getBookName() == name_book){
+                    books[i].displayDetails();
+                    return;
+                }
             }
+            cout << "Book not found!" << endl;
         }
         void assignBook(string name_book){
             for (int i = 0; i < currentBookNums; i++){
-                if (books[i].availabilityStatus() && books[i].name_book == name_book){
+                if (books[i].availabilityStatus() && books[i].getBookName() == name_book){
                     books[i].issueBook();
                     return;
                 }
@@ -225,8 +247,9 @@ int main(){
     addBook(shelfy, b3, storedCount);
     Book b4 = {"b4", "agartha", 1999};
     addBook(shelfy, b4, storedCount);
-
     cout << "Total number of book copies: " << storedCount << endl;
+    delete[] shelfy;
+
     
 
     Student *pointy_student = new Student("John");
@@ -236,8 +259,11 @@ int main(){
     for (int i = 0; i < 5; i++){
         students[i] = new Student("Student " + to_string(i));
     }
-
+    for (int i = 0; i < 5; i++){
+        delete students[i];
+    }
     delete[] students;
+
 
     destroyTest();
 
